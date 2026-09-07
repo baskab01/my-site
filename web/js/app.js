@@ -27,15 +27,46 @@ document.addEventListener("DOMContentLoaded", async () => {
             .replace(/\b\w/g, char => char.toUpperCase());
     }
 
-    function formatProfileValue(value) {
-        if (value === null || value === undefined || value === "") return "-";
-        if (typeof value === "boolean") return value ? "ใช่" : "ไม่ใช่";
-        if (typeof value === "object") {
-            try { return JSON.stringify(value); }
-            catch { return String(value); }
-        }
-        return String(value);
+function formatProfileValue(value, key = "") {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "-";
     }
+
+    // Timestamp จาก database
+    if (
+        typeof value === "number" &&
+        (
+            key === "created_at" ||
+            key === "updated_at"
+        )
+    ) {
+        return new Date(value).toLocaleString(
+            "th-TH",
+            {
+                dateStyle: "medium",
+                timeStyle: "medium"
+            }
+        );
+    }
+
+    if (typeof value === "boolean") {
+        return value ? "ใช่" : "ไม่ใช่";
+    }
+
+    if (typeof value === "object") {
+        try {
+            return JSON.stringify(value);
+        } catch {
+            return String(value);
+        }
+    }
+
+    return String(value);
+}
 
     function renderUserProfile(user) {
         profileFields.innerHTML = "";
