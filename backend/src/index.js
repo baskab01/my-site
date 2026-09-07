@@ -524,6 +524,26 @@ export default {
                     publicUser[key] = value;
                 }
 
+                const stats = await env.my_site_db
+                    .prepare(`
+                        SELECT
+                            COUNT(*) AS games_played,
+                            COALESCE(SUM(plays), 0) AS total_plays,
+                            COALESCE(SUM(score), 0) AS total_score,
+                            COALESCE(MAX(best_score), 0) AS best_score
+                        FROM game_stats
+                        WHERE user_id = ?
+                    `)
+                    .bind(user.id)
+                    .first();
+
+                publicUser.stats = {
+                    games_played: Number(stats?.games_played || 0),
+                    total_plays: Number(stats?.total_plays || 0),
+                    total_score: Number(stats?.total_score || 0),
+                    best_score: Number(stats?.best_score || 0)
+                };
+
                 return json({
                     ok: true,
                     user: publicUser
@@ -537,6 +557,71 @@ export default {
                     ok: false,
                     error: "Failed to load user"
                 }, 500);
+            }
+        }
+
+        /* =========================
+           GAME STATS
+        ========================= */
+
+        if (
+            url.pathname === "/stats/game" &&
+            request.method === "POST"
+        ) {
+            try {
+                const token = getCookie(request, "session");
+
+                if (!token) {
+                    return json({ ok: false, error: "Not authenticated" }, 401);
+                }
+
+                const tokenHash = await hashPassword(token);
+
+                const session = await env.my_site_db
+                    .prepare(`
+                        SELECT user_id, expires_at
+                        FROM sessions
+                        WHERE token_hash = ?
+                    `)
+                    .bind(tokenHash)
+                    .first();
+
+                if (!session || session.expires_at < Date.now()) {
+                    return json({ ok: false, error: "Session expired" }, 401);
+                }
+
+                const body = await request.json();
+                const game = String(body?.game || "").trim();
+                const score = Number(body?.score ?? 0);
+
+                if (!game || game.length > 100) {
+                    return json({ ok: false, error: "Invalid game" }, 400);
+                }
+
+                if (!Number.isFinite(score) || score < 0) {
+                    return json({ ok: false, error: "Invalid score" }, 400);
+                }
+
+                const now = Date.now();
+
+                await env.my_site_db
+                    .prepare(`
+                        INSERT INTO game_stats
+                        (user_id, game, plays, score, best_score, updated_at)
+                        VALUES (?, ?, 1, ?, ?, ?)
+                        ON CONFLICT(user_id, game) DO UPDATE SET
+                            plays = game_stats.plays + 1,
+                            score = game_stats.score + excluded.score,
+                            best_score = MAX(game_stats.best_score, excluded.best_score),
+                            updated_at = excluded.updated_at
+                    `)
+                    .bind(session.user_id, game, score, score, now)
+                    .run();
+
+                return json({ ok: true });
+            } catch (error) {
+                console.error("GAME STATS ERROR:", error);
+                return json({ ok: false, error: "Failed to save game stats" }, 500);
             }
         }
 
