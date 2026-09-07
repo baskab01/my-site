@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BAS LAB</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+
+            <a href="#" class="logo">
+                BAS LAB
+            </a>
+
+            <nav class="main-nav">
+                <a href="#home">หน้าแรก</a>
+                <a href="#games">เกม</a>
+                <a href="#profile">โปรไฟล์</a>
+            </nav>
+
+            <div class="header-actions">
+                <button id="loginBtn" type="button">
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- Main -->
+    <main>
+
+        <!-- Home -->
+        <section id="home" class="hero">
+            <div class="container">
+
+                <p class="hero-label">
+                    BAS LAB
+                </p>
+
+                <h1>
+                    ศูนย์รวมเกมและโปรเจกต์
+                </h1>
+
+                <p class="hero-description">
+                    เว็บไซต์สำหรับรวมเกม โปรเจกต์ และระบบต่าง ๆ
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#games" class="button primary">
+                        ดูเกม
+                    </a>
+
+                    <button id="loginHeroBtn" class="button secondary" type="button">
+                        เข้าสู่ระบบ
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Games -->
+        <section id="games" class="section">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-label">
+                        GAMES
+                    </p>
+
+                    <h2>
+                        เกม
+                    </h2>
+
+                    <p>
+                        เลือกเกมที่ต้องการเล่น
+                    </p>
+                </div>
+
+
+                <div class="game-grid">
+
+                    <article class="game-card">
+                        <div class="game-card-content">
+                            <span class="game-status">
+                                พร้อมเล่น
+                            </span>
+
+                            <h3>
+                                NPC
+                            </h3>
+
+                            <p>
+                                เกมทดลอง NPC
+                            </p>
+
+                            <a href="../games/npc/index.html" class="button primary">
+                                เล่นเกม
+                            </a>
+                        </div>
+                    </article>
+
+
+                    <article class="game-card">
+                        <div class="game-card-content">
+                            <span class="game-status">
+                                พร้อมเล่น
+                            </span>
+
+                            <h3>
+                                DON'T PRESS
+                            </h3>
+
+                            <p>
+                                อย่ากดปุ่ม
+                            </p>
+
+                            <a href="../games/dont-press/index.html" class="button primary">
+                                เล่นเกม
+                            </a>
+                        </div>
+                    </article>
+
+
+                    <article class="game-card">
+                        <div class="game-card-content">
+                            <span class="game-status">
+                                พร้อมเล่น
+                            </span>
+
+                            <h3>
+                                LIE DETECTOR
+                            </h3>
+
+                            <p>
+                                เกมจับโกหก
+                            </p>
+
+                            <a href="../games/lie-detector/index.html" class="button primary">
+                                เล่นเกม
+                            </a>
+                        </div>
+                    </article>
+
+
+                    <article class="game-card">
+                        <div class="game-card-content">
+                            <span class="game-status">
+                                พร้อมเล่น
+                            </span>
+
+                            <h3>
+                                FREE MONEY
+                            </h3>
+
+                            <p>
+                                เกมทดลอง
+                            </p>
+
+                            <a href="../games/free-money/index.html" class="button primary">
+                                เล่นเกม
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Profile -->
+        <section id="profile" class="section profile-section">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-label">
+                        PROFILE
+                    </p>
+
+                    <h2>
+                        โปรไฟล์
+                    </h2>
+
+                    <p>
+                        เข้าสู่ระบบเพื่อดูข้อมูลบัญชี
+                    </p>
+                </div>
+
+                <div class="profile-box">
+                    <p id="profileStatus">
+                        ยังไม่ได้เข้าสู่ระบบ
+                    </p>
+
+                    <button id="profileLoginBtn" class="button primary" type="button">
+                        เข้าสู่ระบบ
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p>
+                © 2026 BAS LAB
+            </p>
+        </div>
+    </footer>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
