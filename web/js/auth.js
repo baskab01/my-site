@@ -9,11 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-        const username =
-            document.getElementById("username").value.trim();
+        const username = document
+            .getElementById("username")
+            .value
+            .trim();
 
-        const password =
-            document.getElementById("password").value;
+        const password = document
+            .getElementById("password")
+            .value;
 
         message.textContent = "กำลังเข้าสู่ระบบ...";
 
@@ -23,13 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 `${API_URL}/auth/login`,
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json"
                     },
-
                     credentials: "include",
-
                     body: JSON.stringify({
                         username,
                         password
@@ -39,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
 
+            console.log("LOGIN RESPONSE:", data);
+
             if (!response.ok || !data.ok) {
                 message.textContent =
                     data.error || "เข้าสู่ระบบไม่สำเร็จ";
                 return;
             }
 
-            message.textContent =
-                "เข้าสู่ระบบสำเร็จ";
+            message.textContent = "เข้าสู่ระบบสำเร็จ";
 
             setTimeout(() => {
                 window.location.href = "index.html";
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-            console.error(error);
+            console.error("LOGIN ERROR:", error);
 
             message.textContent =
                 "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้";
