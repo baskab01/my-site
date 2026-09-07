@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const profileAvatar = document.getElementById("profileAvatar");
     const profileUsername = document.getElementById("profileUsername");
     const profileDescription = document.getElementById("profileDescription");
+
     const profileModal = document.getElementById("profileModal");
     const profileBackdrop = document.getElementById("profileBackdrop");
     const profileCloseBtn = document.getElementById("profileCloseBtn");
@@ -17,218 +18,844 @@ document.addEventListener("DOMContentLoaded", async () => {
     const profileFields = document.getElementById("profileFields");
     const modalProfileUsername = document.getElementById("modalProfileUsername");
 
+
+    /* =========================
+       LOGIN
+    ========================= */
+
     function openLogin() {
         window.location.href = "login.html";
     }
 
+
+    /* =========================
+       FORMAT PROFILE NAME
+    ========================= */
+
     function formatProfileName(key) {
+
         return String(key)
             .replace(/_/g, " ")
             .replace(/\b\w/g, char => char.toUpperCase());
+
     }
 
-function formatProfileValue(value, key = "") {
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "-";
-    }
+    /* =========================
+       FORMAT PROFILE VALUE
+    ========================= */
 
-    // Timestamp จาก database
-    if (
-        typeof value === "number" &&
-        (
-            key === "created_at" ||
-            key === "updated_at"
-        )
-    ) {
-        return new Date(value).toLocaleString(
-            "th-TH",
-            {
-                dateStyle: "medium",
-                timeStyle: "medium"
-            }
-        );
-    }
+    function formatProfileValue(value, key = "") {
 
-    if (typeof value === "boolean") {
-        return value ? "ใช่" : "ไม่ใช่";
-    }
-
-    if (typeof value === "object") {
-        try {
-            return JSON.stringify(value);
-        } catch {
-            return String(value);
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "-";
         }
+
+
+        /* =========================
+           CREATED AT
+        ========================= */
+
+        if (key === "created_at") {
+
+            const createdDate =
+                new Date(Number(value));
+
+            if (
+                Number.isNaN(
+                    createdDate.getTime()
+                )
+            ) {
+                return "-";
+            }
+
+
+            return createdDate.toLocaleString(
+                "th-TH",
+                {
+                    dateStyle: "long",
+                    timeStyle: "medium"
+                }
+            );
+
+        }
+
+
+        /* =========================
+           UPDATED AT
+        ========================= */
+
+        if (key === "updated_at") {
+
+            return null;
+
+        }
+
+
+        /* =========================
+           BOOLEAN
+        ========================= */
+
+        if (
+            typeof value === "boolean"
+        ) {
+
+            return value
+                ? "ใช่"
+                : "ไม่ใช่";
+
+        }
+
+
+        /* =========================
+           OBJECT
+        ========================= */
+
+        if (
+            typeof value === "object"
+        ) {
+
+            try {
+
+                return JSON.stringify(value);
+
+            } catch {
+
+                return String(value);
+
+            }
+
+        }
+
+
+        return String(value);
+
     }
 
-    return String(value);
-}
+
+    /* =========================
+       CALCULATE ACCOUNT AGE
+    ========================= */
+
+    function getAccountAge(createdAt) {
+
+        const createdTime =
+            Number(createdAt);
+
+        if (
+            !Number.isFinite(createdTime)
+        ) {
+            return "-";
+        }
+
+
+        const now =
+            Date.now();
+
+
+        const difference =
+            now - createdTime;
+
+
+        if (difference < 0) {
+            return "0 วัน";
+        }
+
+
+        const days =
+            Math.floor(
+                difference /
+                (1000 * 60 * 60 * 24)
+            );
+
+
+        return `${days.toLocaleString("th-TH")} วัน`;
+
+    }
+
+
+    /* =========================
+       RENDER USER PROFILE
+    ========================= */
 
     function renderUserProfile(user) {
+
         profileFields.innerHTML = "";
 
-        Object.entries(user).forEach(([key, value]) => {
-            const row = document.createElement("div");
-            row.className = "profile-field";
 
-            const name = document.createElement("div");
-            name.className = "profile-field-name";
-            name.textContent = formatProfileName(key);
+        Object.entries(user).forEach(
+            ([key, value]) => {
 
-            const val = document.createElement("div");
-            val.className = "profile-field-value";
-            val.textContent = formatProfileValue(value);
+                /*
+                 * ไม่แสดง updated_at
+                 */
+                if (key === "updated_at") {
+                    return;
+                }
 
-            row.append(name, val);
-            profileFields.appendChild(row);
-        });
-    }
 
-    async function openUserProfile(username) {
-        if (!username) return;
+                /* =========================
+                   CREATED AT
+                ========================= */
 
-        username = String(username).trim();
-        if (!username) return;
+                if (key === "created_at") {
 
-        profileModal?.classList.add("show");
-        profileModal?.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
+                    const createdDate =
+                        new Date(Number(value));
 
-        modalProfileUsername.textContent = username;
-        profileLoading.style.display = "block";
-        profileError.style.display = "none";
-        profileFields.innerHTML = "";
 
-        try {
-            const response = await fetch(
-                `${API_URL}/users/${encodeURIComponent(username)}`,
-                { method: "GET", credentials: "include" }
-            );
+                    /*
+                     * ผู้ใช้สร้างเมื่อ
+                     */
 
-            const data = await response.json();
+                    const createdRow =
+                        document.createElement("div");
 
-            if (!response.ok || !data.ok || !data.user) {
-                throw new Error(data.error || "User not found");
+                    createdRow.className =
+                        "profile-field";
+
+
+                    const createdName =
+                        document.createElement("div");
+
+                    createdName.className =
+                        "profile-field-name";
+
+                    createdName.textContent =
+                        "ผู้ใช้สร้างเมื่อ";
+
+
+                    const createdValue =
+                        document.createElement("div");
+
+                    createdValue.className =
+                        "profile-field-value";
+
+
+                    if (
+                        Number.isNaN(
+                            createdDate.getTime()
+                        )
+                    ) {
+
+                        createdValue.textContent =
+                            "-";
+
+                    } else {
+
+                        createdValue.textContent =
+                            createdDate.toLocaleString(
+                                "th-TH",
+                                {
+                                    dateStyle: "long",
+                                    timeStyle: "medium"
+                                }
+                            );
+
+                    }
+
+
+                    createdRow.append(
+                        createdName,
+                        createdValue
+                    );
+
+
+                    profileFields.appendChild(
+                        createdRow
+                    );
+
+
+                    /*
+                     * สร้างมาแล้ว
+                     */
+
+                    const ageRow =
+                        document.createElement("div");
+
+                    ageRow.className =
+                        "profile-field";
+
+
+                    const ageName =
+                        document.createElement("div");
+
+                    ageName.className =
+                        "profile-field-name";
+
+                    ageName.textContent =
+                        "สร้างมาแล้ว";
+
+
+                    const ageValue =
+                        document.createElement("div");
+
+                    ageValue.className =
+                        "profile-field-value";
+
+                    ageValue.textContent =
+                        getAccountAge(value);
+
+
+                    ageRow.append(
+                        ageName,
+                        ageValue
+                    );
+
+
+                    profileFields.appendChild(
+                        ageRow
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   OTHER FIELDS
+                ========================= */
+
+                const formattedValue =
+                    formatProfileValue(
+                        value,
+                        key
+                    );
+
+
+                if (
+                    formattedValue === null
+                ) {
+                    return;
+                }
+
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "profile-field";
+
+
+                const name =
+                    document.createElement("div");
+
+                name.className =
+                    "profile-field-name";
+
+                name.textContent =
+                    formatProfileName(key);
+
+
+                const val =
+                    document.createElement("div");
+
+                val.className =
+                    "profile-field-value";
+
+                val.textContent =
+                    formattedValue;
+
+
+                row.append(
+                    name,
+                    val
+                );
+
+
+                profileFields.appendChild(
+                    row
+                );
+
             }
-
-            modalProfileUsername.textContent = data.user.username || username;
-            renderUserProfile(data.user);
-            profileLoading.style.display = "none";
-
-        } catch (error) {
-            console.error("PROFILE ERROR:", error);
-            profileLoading.style.display = "none";
-            profileError.style.display = "block";
-        }
-    }
-
-    function closeUserProfile() {
-        profileModal?.classList.remove("show");
-        profileModal?.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-    }
-
-    async function logout() {
-        try {
-            const response = await fetch(
-                `${API_URL}/auth/logout`,
-                { method: "POST", credentials: "include" }
-            );
-
-            const data = await response.json();
-            if (response.ok && data.ok) window.location.reload();
-        } catch (error) {
-            console.error("LOGOUT ERROR:", error);
-        }
-    }
-
-    // ปุ่ม Login / Profile เดิม
-    loginBtn?.addEventListener("click", openLogin);
-    profileLoginBtn?.addEventListener("click", openLogin);
-
-    // ตรวจสอบ Session
-    try {
-        const response = await fetch(
-            `${API_URL}/auth/me`,
-            { method: "GET", credentials: "include" }
         );
 
-        const data = await response.json();
-
-        if (response.ok && data.ok && data.user) {
-            currentUser = data.user;
-            const username = currentUser.username;
-
-            // ชื่อด้านขวาบน = ปุ่มเปิด Profile ของ user นั้น
-            if (loginBtn) {
-                loginBtn.textContent = username;
-                loginBtn.classList.add("user-profile-clickable");
-                loginBtn.removeEventListener("click", openLogin);
-                loginBtn.addEventListener("click", () => openUserProfile(username));
-            }
-
-            if (profileAvatar) {
-                profileAvatar.textContent = username.charAt(0).toUpperCase();
-            }
-
-            if (profileUsername) {
-                profileUsername.textContent = username;
-                profileUsername.classList.add("user-profile-clickable");
-                profileUsername.title = "เปิดโปรไฟล์";
-                profileUsername.addEventListener("click", () => openUserProfile(username));
-            }
-
-            if (profileDescription) {
-                profileDescription.textContent =
-                    "เข้าสู่ระบบแล้ว คลิกชื่อเพื่อดูข้อมูลโปรไฟล์";
-            }
-
-            if (profileLoginBtn) {
-                profileLoginBtn.textContent = "ออกจากระบบ";
-                profileLoginBtn.removeEventListener("click", openLogin);
-                profileLoginBtn.addEventListener("click", logout);
-            }
-        }
-    } catch (error) {
-        console.error("AUTH CHECK ERROR:", error);
     }
 
-    // คลิกคำว่า "โปรไฟล์" ในเมนู = เปิด Profile UI
-    document.querySelectorAll('.nav a[href="#profile"]').forEach(link => {
-        link.addEventListener("click", event => {
-            if (!currentUser) return;
-            event.preventDefault();
-            openUserProfile(currentUser.username);
-        });
-    });
 
-    // คลิกปุ่มโปรไฟล์ใน Hero = เปิด Profile UI
-    document.querySelectorAll('a[href="#profile"].btn').forEach(link => {
-        link.addEventListener("click", event => {
-            if (!currentUser) return;
-            event.preventDefault();
-            openUserProfile(currentUser.username);
-        });
-    });
+    /* =========================
+       OPEN USER PROFILE
+    ========================= */
 
-    profileCloseBtn?.addEventListener("click", closeUserProfile);
-    profileBackdrop?.addEventListener("click", closeUserProfile);
+    async function openUserProfile(username) {
 
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape" && profileModal?.classList.contains("show")) {
-            closeUserProfile();
+        if (!username) {
+            return;
         }
-    });
 
-    // ปุ่มเกม
-    document.querySelectorAll(".play-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const game = button.dataset.game;
-            alert(`เกม ${game} จะเปิดในขั้นตอนถัดไป`);
+
+        username =
+            String(username).trim();
+
+
+        if (!username) {
+            return;
+        }
+
+
+        profileModal?.classList.add("show");
+
+        profileModal?.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+
+        modalProfileUsername.textContent =
+            username;
+
+
+        profileLoading.style.display =
+            "block";
+
+
+        profileError.style.display =
+            "none";
+
+
+        profileFields.innerHTML =
+            "";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/users/${encodeURIComponent(username)}`,
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.ok ||
+                !data.user
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "User not found"
+                );
+
+            }
+
+
+            modalProfileUsername.textContent =
+                data.user.username ||
+                username;
+
+
+            renderUserProfile(
+                data.user
+            );
+
+
+            profileLoading.style.display =
+                "none";
+
+
+        } catch (error) {
+
+            console.error(
+                "PROFILE ERROR:",
+                error
+            );
+
+
+            profileLoading.style.display =
+                "none";
+
+
+            profileError.style.display =
+                "block";
+
+        }
+
+    }
+
+
+    /* =========================
+       CLOSE PROFILE
+    ========================= */
+
+    function closeUserProfile() {
+
+        profileModal?.classList.remove(
+            "show"
+        );
+
+
+        profileModal?.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    async function logout() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/auth/logout`,
+                    {
+                        method: "POST",
+                        credentials: "include"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                response.ok &&
+                data.ok
+            ) {
+
+                window.location.reload();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "LOGOUT ERROR:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       LOGIN / PROFILE BUTTONS
+    ========================= */
+
+    loginBtn?.addEventListener(
+        "click",
+        openLogin
+    );
+
+
+    profileLoginBtn?.addEventListener(
+        "click",
+        openLogin
+    );
+
+
+    /* =========================
+       CHECK SESSION
+    ========================= */
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/auth/me`,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            data.ok &&
+            data.user
+        ) {
+
+            currentUser =
+                data.user;
+
+
+            const username =
+                currentUser.username;
+
+
+            /* =========================
+               HEADER USERNAME
+            ========================= */
+
+            if (loginBtn) {
+
+                loginBtn.textContent =
+                    username;
+
+
+                loginBtn.classList.add(
+                    "user-profile-clickable"
+                );
+
+
+                loginBtn.removeEventListener(
+                    "click",
+                    openLogin
+                );
+
+
+                loginBtn.addEventListener(
+                    "click",
+                    () => {
+
+                        openUserProfile(
+                            username
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =========================
+               AVATAR
+            ========================= */
+
+            if (profileAvatar) {
+
+                profileAvatar.textContent =
+                    username
+                        .charAt(0)
+                        .toUpperCase();
+
+            }
+
+
+            /* =========================
+               PROFILE USERNAME
+            ========================= */
+
+            if (profileUsername) {
+
+                profileUsername.textContent =
+                    username;
+
+
+                profileUsername.classList.add(
+                    "user-profile-clickable"
+                );
+
+
+                profileUsername.title =
+                    "เปิดโปรไฟล์";
+
+
+                profileUsername.addEventListener(
+                    "click",
+                    () => {
+
+                        openUserProfile(
+                            username
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =========================
+               PROFILE DESCRIPTION
+            ========================= */
+
+            if (profileDescription) {
+
+                profileDescription.textContent =
+                    "เข้าสู่ระบบแล้ว คลิกชื่อเพื่อดูข้อมูลโปรไฟล์";
+
+            }
+
+
+            /* =========================
+               LOGOUT BUTTON
+            ========================= */
+
+            if (profileLoginBtn) {
+
+                profileLoginBtn.textContent =
+                    "ออกจากระบบ";
+
+
+                profileLoginBtn.removeEventListener(
+                    "click",
+                    openLogin
+                );
+
+
+                profileLoginBtn.addEventListener(
+                    "click",
+                    logout
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "AUTH CHECK ERROR:",
+            error
+        );
+
+    }
+
+
+    /* =========================
+       NAV PROFILE
+    ========================= */
+
+    document
+        .querySelectorAll(
+            '.nav a[href="#profile"]'
+        )
+        .forEach(link => {
+
+            link.addEventListener(
+                "click",
+                event => {
+
+                    if (!currentUser) {
+                        return;
+                    }
+
+
+                    event.preventDefault();
+
+
+                    openUserProfile(
+                        currentUser.username
+                    );
+
+                }
+            );
+
         });
-    });
+
+
+    /* =========================
+       HERO PROFILE
+    ========================= */
+
+    document
+        .querySelectorAll(
+            'a[href="#profile"].btn'
+        )
+        .forEach(link => {
+
+            link.addEventListener(
+                "click",
+                event => {
+
+                    if (!currentUser) {
+                        return;
+                    }
+
+
+                    event.preventDefault();
+
+
+                    openUserProfile(
+                        currentUser.username
+                    );
+
+                }
+            );
+
+        });
+
+
+    /* =========================
+       MODAL CLOSE
+    ========================= */
+
+    profileCloseBtn?.addEventListener(
+        "click",
+        closeUserProfile
+    );
+
+
+    profileBackdrop?.addEventListener(
+        "click",
+        closeUserProfile
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                profileModal?.classList.contains(
+                    "show"
+                )
+            ) {
+
+                closeUserProfile();
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       GAMES
+    ========================= */
+
+    document
+        .querySelectorAll(".play-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const game =
+                        button.dataset.game;
+
+
+                    alert(
+                        `เกม ${game} จะเปิดในขั้นตอนถัดไป`
+                    );
+
+                }
+            );
+
+        });
+
 });
