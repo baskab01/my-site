@@ -11,164 +11,157 @@
 
 <body>
 
-    <!-- Header -->
-    <header class="site-header">
+    <header class="header">
         <div class="container header-inner">
 
-            <a href="#" class="logo">
-                BAS LAB
+            <a href="#home" class="brand">
+                <span class="brand-mark">B</span>
+                <span>BAS LAB</span>
             </a>
 
-            <nav class="main-nav">
-                <a href="#home">หน้าแรก</a>
+            <nav class="nav">
+                <a href="#home" class="active">หน้าแรก</a>
                 <a href="#games">เกม</a>
                 <a href="#profile">โปรไฟล์</a>
             </nav>
 
-            <div class="header-actions">
-                <button id="loginBtn" type="button">
-                    เข้าสู่ระบบ
-                </button>
-            </div>
+            <button class="login-btn" id="loginBtn">
+                เข้าสู่ระบบ
+            </button>
 
         </div>
     </header>
 
 
-    <!-- Main -->
     <main>
 
-        <!-- Home -->
-        <section id="home" class="hero">
+        <!-- HERO -->
+        <section class="hero" id="home">
             <div class="container">
 
-                <p class="hero-label">
-                    BAS LAB
-                </p>
+                <div class="hero-content">
 
-                <h1>
-                    ศูนย์รวมเกมและโปรเจกต์
-                </h1>
+                    <div class="eyebrow">
+                        <span class="status-dot"></span>
+                        BAS LAB
+                    </div>
 
-                <p class="hero-description">
-                    เว็บไซต์สำหรับรวมเกม โปรเจกต์ และระบบต่าง ๆ
-                </p>
+                    <h1>
+                        เล่นเกม<br>
+                        <span>แบบง่าย ๆ</span>
+                    </h1>
 
-                <div class="hero-actions">
-                    <a href="#games" class="button primary">
-                        ดูเกม
-                    </a>
+                    <p>
+                        รวมเกมและโปรเจกต์ต่าง ๆ ของ BAS LAB
+                        ไว้ในที่เดียว
+                    </p>
 
-                    <button id="loginHeroBtn" class="button secondary" type="button">
-                        เข้าสู่ระบบ
-                    </button>
+                    <div class="hero-actions">
+                        <a href="#games" class="btn btn-primary">
+                            ดูเกม
+                        </a>
+
+                        <a href="#profile" class="btn btn-secondary">
+                            โปรไฟล์
+                        </a>
+                    </div>
+
                 </div>
 
             </div>
         </section>
 
 
-        <!-- Games -->
-        <section id="games" class="section">
+        <!-- GAMES -->
+        <section class="section" id="games">
             <div class="container">
 
-                <div class="section-heading">
-                    <p class="section-label">
-                        GAMES
-                    </p>
+                <div class="section-top">
 
-                    <h2>
-                        เกม
-                    </h2>
+                    <div>
+                        <div class="section-label">GAMES</div>
+                        <h2>เกม</h2>
+                    </div>
 
-                    <p>
-                        เลือกเกมที่ต้องการเล่น
-                    </p>
+                    <span class="game-count">4 เกม</span>
+
                 </div>
 
 
                 <div class="game-grid">
 
                     <article class="game-card">
-                        <div class="game-card-content">
-                            <span class="game-status">
-                                พร้อมเล่น
-                            </span>
+                        <div class="game-icon">N</div>
 
-                            <h3>
-                                NPC
-                            </h3>
+                        <div class="game-info">
+                            <div class="game-title-row">
+                                <h3>NPC</h3>
+                                <span class="badge">พร้อมเล่น</span>
+                            </div>
 
-                            <p>
-                                เกมทดลอง NPC
-                            </p>
+                            <p>ทดลองเล่นกับ NPC และระบบต่าง ๆ</p>
 
-                            <a href="../games/npc/index.html" class="button primary">
+                            <button class="play-btn" data-game="npc">
                                 เล่นเกม
-                            </a>
+                                <span>→</span>
+                            </button>
                         </div>
                     </article>
 
 
                     <article class="game-card">
-                        <div class="game-card-content">
-                            <span class="game-status">
-                                พร้อมเล่น
-                            </span>
+                        <div class="game-icon">!</div>
 
-                            <h3>
-                                DON'T PRESS
-                            </h3>
+                        <div class="game-info">
+                            <div class="game-title-row">
+                                <h3>DON'T PRESS</h3>
+                                <span class="badge">พร้อมเล่น</span>
+                            </div>
 
-                            <p>
-                                อย่ากดปุ่ม
-                            </p>
+                            <p>มีปุ่มอยู่ตรงหน้า แล้วคุณจะกดไหม?</p>
 
-                            <a href="../games/dont-press/index.html" class="button primary">
+                            <button class="play-btn" data-game="dont-press">
                                 เล่นเกม
-                            </a>
+                                <span>→</span>
+                            </button>
                         </div>
                     </article>
 
 
                     <article class="game-card">
-                        <div class="game-card-content">
-                            <span class="game-status">
-                                พร้อมเล่น
-                            </span>
+                        <div class="game-icon">L</div>
 
-                            <h3>
-                                LIE DETECTOR
-                            </h3>
+                        <div class="game-info">
+                            <div class="game-title-row">
+                                <h3>LIE DETECTOR</h3>
+                                <span class="badge">พร้อมเล่น</span>
+                            </div>
 
-                            <p>
-                                เกมจับโกหก
-                            </p>
+                            <p>มาดูกันว่าคำตอบของคุณจะเป็นอย่างไร</p>
 
-                            <a href="../games/lie-detector/index.html" class="button primary">
+                            <button class="play-btn" data-game="lie-detector">
                                 เล่นเกม
-                            </a>
+                                <span>→</span>
+                            </button>
                         </div>
                     </article>
 
 
                     <article class="game-card">
-                        <div class="game-card-content">
-                            <span class="game-status">
-                                พร้อมเล่น
-                            </span>
+                        <div class="game-icon">฿</div>
 
-                            <h3>
-                                FREE MONEY
-                            </h3>
+                        <div class="game-info">
+                            <div class="game-title-row">
+                                <h3>FREE MONEY</h3>
+                                <span class="badge">พร้อมเล่น</span>
+                            </div>
 
-                            <p>
-                                เกมทดลอง
-                            </p>
+                            <p>เงินฟรีอยู่ตรงหน้า จะเอาไหม?</p>
 
-                            <a href="../games/free-money/index.html" class="button primary">
+                            <button class="play-btn" data-game="free-money">
                                 เล่นเกม
-                            </a>
+                                <span>→</span>
+                            </button>
                         </div>
                     </article>
 
@@ -178,32 +171,30 @@
         </section>
 
 
-        <!-- Profile -->
-        <section id="profile" class="section profile-section">
+        <!-- PROFILE -->
+        <section class="section profile-section" id="profile">
             <div class="container">
 
-                <div class="section-heading">
-                    <p class="section-label">
-                        PROFILE
-                    </p>
+                <div class="profile-card">
 
-                    <h2>
-                        โปรไฟล์
-                    </h2>
+                    <div class="profile-avatar">
+                        ?
+                    </div>
 
-                    <p>
-                        เข้าสู่ระบบเพื่อดูข้อมูลบัญชี
-                    </p>
-                </div>
+                    <div class="profile-content">
+                        <div class="section-label">PROFILE</div>
 
-                <div class="profile-box">
-                    <p id="profileStatus">
-                        ยังไม่ได้เข้าสู่ระบบ
-                    </p>
+                        <h2>ยังไม่ได้เข้าสู่ระบบ</h2>
 
-                    <button id="profileLoginBtn" class="button primary" type="button">
+                        <p>
+                            เข้าสู่ระบบเพื่อดูโปรไฟล์ คะแนน และสถิติการเล่น
+                        </p>
+                    </div>
+
+                    <button class="btn btn-primary" id="profileLoginBtn">
                         เข้าสู่ระบบ
                     </button>
+
                 </div>
 
             </div>
@@ -212,12 +203,10 @@
     </main>
 
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <p>
-                © 2026 BAS LAB
-            </p>
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>BAS LAB</span>
+            <span>© 2026</span>
         </div>
     </footer>
 

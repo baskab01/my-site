@@ -1,17 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("BAS LAB started");
 
-    const loginButtons = [
-        document.getElementById("loginBtn"),
-        document.getElementById("loginHeroBtn"),
-        document.getElementById("profileLoginBtn")
-    ];
+    const loginBtn = document.getElementById("loginBtn");
+    const profileLoginBtn = document.getElementById("profileLoginBtn");
 
-    loginButtons.forEach((button) => {
-        if (!button) return;
+    function openLogin() {
+        alert("ระบบ Login จะเพิ่มในขั้นตอนถัดไป");
+    }
+
+    loginBtn?.addEventListener("click", openLogin);
+    profileLoginBtn?.addEventListener("click", openLogin);
+
+
+    document.querySelectorAll(".play-btn").forEach((button) => {
 
         button.addEventListener("click", () => {
-            alert("ระบบเข้าสู่ระบบจะสร้างในขั้นตอนถัดไป");
+
+            const game = button.dataset.game;
+
+            console.log("Selected game:", game);
+
+            alert(`เกม ${game} จะเปิดในขั้นตอนถัดไป`);
         });
+
     });
+
 });
