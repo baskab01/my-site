@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>คลิกไว ๆ — BAS LAB</title>
+  <style>
+    :root{
+      --bg:#090b12;--panel:#111521;--text:#f5f7ff;--muted:#9da5ba;
+      --line:rgba(255,255,255,.09);--accent:#7c5cff;--green:#35d39a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;background:
+      radial-gradient(circle at 20% 0%,rgba(124,92,255,.15),transparent 35%),
+      radial-gradient(circle at 90% 20%,rgba(0,200,255,.08),transparent 30%),var(--bg);
+      color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:grid;place-items:center;padding:20px
+    }
+    .wrap{width:min(720px,100%)}
+    .back{
+      display:inline-block;margin-bottom:14px;padding:10px 14px;border:1px solid var(--line);
+      border-radius:10px;color:#fff;text-decoration:none;background:rgba(255,255,255,.05)
+    }
+    .box{
+      padding:clamp(22px,5vw,42px);border:1px solid var(--line);border-radius:24px;
+      background:linear-gradient(145deg,#151a29,#0e121d);
+      box-shadow:0 25px 80px rgba(0,0,0,.35);text-align:center
+    }
+    h1{margin:0 0 8px;font-size:clamp(30px,7vw,52px)}
+    p{color:var(--muted)}
+    .hud{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
+    .stat{padding:15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035)}
+    .label{display:block;color:var(--muted);font-size:13px;margin-bottom:5px}
+    .value{font-size:30px;font-weight:900}
+    #clickBtn{
+      width:min(360px,90vw);height:180px;border:0;border-radius:24px;
+      color:#fff;background:var(--accent);font-size:30px;font-weight:900;
+      cursor:pointer;box-shadow:0 18px 45px rgba(124,92,255,.28);
+      user-select:none;-webkit-tap-highlight-color:transparent
+    }
+    #clickBtn:active{transform:scale(.97)}
+    #startBtn,.secondary{
+      margin-top:18px;padding:12px 20px;border:1px solid var(--line);border-radius:11px;
+      color:#fff;background:rgba(255,255,255,.06);font-weight:800;cursor:pointer
+    }
+    #startBtn{background:var(--accent);border-color:var(--accent)}
+    #result{margin-top:20px;padding:18px;border-radius:15px;background:rgba(53,211,154,.08);border:1px solid rgba(53,211,154,.2)}
+    .hidden{display:none!important}
+    .hint{font-size:13px;color:var(--muted);margin-top:14px}
+    @media(max-width:500px){.hud{grid-template-columns:1fr}.value{font-size:26px}#clickBtn{height:150px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="../../index.html">← กลับ BAS LAB</a>
+
+    <section class="box">
+      <div style="letter-spacing:2px;font-size:12px;font-weight:900;color:#9d8aff">BAS LAB GAME</div>
+      <h1>🖱️ คลิกไว ๆ</h1>
+      <p>มีเวลา 10 วินาที กดปุ่มให้ได้มากที่สุด</p>
+
+      <div class="hud">
+        <div class="stat">
+          <span class="label">คะแนน</span>
+          <span id="score" class="value">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">เวลา</span>
+          <span id="time" class="value">10.0</span>
+        </div>
+      </div>
+
+      <button id="clickBtn" disabled>กดเริ่มเกมก่อน</button>
+      <br>
+      <button id="startBtn">เริ่มเกม</button>
+
+      <div id="result" class="hidden"></div>
+      <div class="hint">ยิ่งกดรัว คะแนนยิ่งสูง</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
