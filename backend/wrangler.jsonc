@@ -1,0 +1,13 @@
+{
+  "name": "my-site-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-07",
+
+  "d1_databases": [
+    {
+      "binding": "my_site_db",
+      "database_name": "my-site-db",
+      "database_id": "9be29236-facd-4b3b-b81a-e9e9d25364c6"
+    }
+  ]
+}

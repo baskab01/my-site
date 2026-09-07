@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileLoginBtn = document.getElementById("profileLoginBtn");
 
     function openLogin() {
-        alert("ระบบ Login จะเพิ่มในขั้นตอนถัดไป");
+        window.location.href = "login.html";
     }
 
     loginBtn?.addEventListener("click", openLogin);
@@ -17,9 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const game = button.dataset.game;
 
-            console.log("Selected game:", game);
-
             alert(`เกม ${game} จะเปิดในขั้นตอนถัดไป`);
+
         });
 
     });
