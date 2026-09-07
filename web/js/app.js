@@ -178,10 +178,339 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     /* =========================
+       GAME STATISTICS
+    ========================= */
+
+    async function getGameStats(username) {
+
+        if (!username) {
+            return null;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/users/${encodeURIComponent(username)}/stats`,
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !data.ok
+            ) {
+                throw new Error(
+                    data.error ||
+                    "ไม่สามารถโหลดสถิติเกมได้"
+                );
+            }
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "GAME STATS ERROR:",
+                error
+            );
+
+            return null;
+
+        }
+
+    }
+
+
+    /* =========================
+       RENDER GAME STATISTICS
+    ========================= */
+
+    function renderGameStats(stats) {
+
+        if (!profileFields) {
+            return;
+        }
+
+        if (!stats) {
+            return;
+        }
+
+
+        const title =
+            document.createElement("div");
+
+        title.className =
+            "profile-section-title";
+
+        title.textContent =
+            "GAME STATISTICS";
+
+
+        profileFields.appendChild(
+            title
+        );
+
+
+        const summary =
+            stats.summary || {};
+
+
+        const values = [
+            [
+                "เกมที่เล่น",
+                summary.games_played ?? 0
+            ],
+            [
+                "เล่นทั้งหมด",
+                summary.total_plays ?? 0
+            ],
+            [
+                "คะแนนรวม",
+                summary.total_score ?? 0
+            ],
+            [
+                "คะแนนสูงสุด",
+                summary.highest_score ?? 0
+            ]
+        ];
+
+
+        values.forEach(
+            ([name, value]) => {
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "profile-field";
+
+
+                const nameElement =
+                    document.createElement("div");
+
+                nameElement.className =
+                    "profile-field-name";
+
+                nameElement.textContent =
+                    name;
+
+
+                const valueElement =
+                    document.createElement("div");
+
+                valueElement.className =
+                    "profile-field-value";
+
+                valueElement.textContent =
+                    Number(value).toLocaleString(
+                        "th-TH"
+                    );
+
+
+                row.append(
+                    nameElement,
+                    valueElement
+                );
+
+
+                profileFields.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        if (
+            Array.isArray(stats.games) &&
+            stats.games.length > 0
+        ) {
+
+            const gameTitle =
+                document.createElement("div");
+
+            gameTitle.className =
+                "profile-section-title";
+
+            gameTitle.textContent =
+                "GAME DETAILS";
+
+
+            profileFields.appendChild(
+                gameTitle
+            );
+
+
+            stats.games.forEach(
+                game => {
+
+                    const row =
+                        document.createElement("div");
+
+                    row.className =
+                        "profile-field";
+
+
+                    const nameElement =
+                        document.createElement("div");
+
+                    nameElement.className =
+                        "profile-field-name";
+
+                    nameElement.textContent =
+                        game.game || "-";
+
+
+                    const valueElement =
+                        document.createElement("div");
+
+                    valueElement.className =
+                        "profile-field-value";
+
+                    valueElement.textContent =
+                        `เล่น ${Number(game.plays || 0).toLocaleString("th-TH")} ครั้ง · คะแนน ${Number(game.score || 0).toLocaleString("th-TH")} · สูงสุด ${Number(game.best_score || 0).toLocaleString("th-TH")}`;
+
+
+                    row.append(
+                        nameElement,
+                        valueElement
+                    );
+
+
+                    profileFields.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       RECORD GAME RESULT
+    ========================= */
+
+    async function recordGameResult(
+        game,
+        score = 0
+    ) {
+
+        if (!currentUser) {
+            return {
+                ok: false,
+                error: "กรุณาเข้าสู่ระบบก่อน"
+            };
+        }
+
+
+        if (!game) {
+            return {
+                ok: false,
+                error: "ไม่พบชื่อเกม"
+            };
+        }
+
+
+        const numericScore =
+            Number(score);
+
+
+        if (
+            !Number.isFinite(
+                numericScore
+            )
+        ) {
+            return {
+                ok: false,
+                error: "คะแนนไม่ถูกต้อง"
+            };
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/game-stats`,
+                    {
+                        method: "POST",
+
+                        credentials: "include",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            game:
+                                String(game),
+
+                            score:
+                                numericScore
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.ok
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "ไม่สามารถบันทึกสถิติได้"
+                );
+
+            }
+
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "RECORD GAME ERROR:",
+                error
+            );
+
+            return {
+                ok: false,
+                error: error.message
+            };
+
+        }
+
+    }
+
+
+    /* =========================
+       PUBLIC GAME STATS FUNCTION
+    ========================= */
+
+    window.recordGameResult =
+        recordGameResult;
+
+
+    /* =========================
        RENDER USER PROFILE
     ========================= */
 
-    function renderUserProfile(user) {
+    async function renderUserProfile(user) {
 
         profileFields.innerHTML = "";
 
@@ -192,6 +521,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 /*
                  * ไม่แสดง updated_at
                  */
+
                 if (key === "updated_at") {
                     return;
                 }
@@ -374,6 +704,33 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         );
 
+
+        /* =========================
+           LOAD GAME STATISTICS
+        ========================= */
+
+        const username =
+            user?.username;
+
+
+        if (username) {
+
+            const stats =
+                await getGameStats(
+                    username
+                );
+
+
+            if (stats) {
+
+                renderGameStats(
+                    stats
+                );
+
+            }
+
+        }
+
     }
 
 
@@ -460,7 +817,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 username;
 
 
-            renderUserProfile(
+            await renderUserProfile(
                 data.user
             );
 
@@ -848,6 +1205,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const game =
                         button.dataset.game;
 
+
+                    if (game === "click") {
+                        window.location.href = "../games/click-speed/";
+                        return;
+                    }
 
                     alert(
                         `เกม ${game} จะเปิดในขั้นตอนถัดไป`
