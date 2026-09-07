@@ -467,6 +467,79 @@ export default {
         }
 
 
+        /* =========================
+           PUBLIC USER PROFILE
+        ========================= */
+
+        if (
+            url.pathname.startsWith("/users/") &&
+            request.method === "GET"
+        ) {
+
+            try {
+
+                const username = decodeURIComponent(
+                    url.pathname.substring("/users/".length)
+                ).trim();
+
+                if (!username) {
+                    return json({
+                        ok: false,
+                        error: "Username is required"
+                    }, 400);
+                }
+
+                const user = await env.my_site_db
+                    .prepare(`
+                        SELECT *
+                        FROM users
+                        WHERE username = ?
+                        LIMIT 1
+                    `)
+                    .bind(username)
+                    .first();
+
+                if (!user) {
+                    return json({
+                        ok: false,
+                        error: "User not found"
+                    }, 404);
+                }
+
+                // ส่งเฉพาะข้อมูลที่ไม่ใช่ความลับ
+                const publicUser = {};
+
+                for (const [key, value] of Object.entries(user)) {
+                    const lowerKey = key.toLowerCase();
+
+                    if (
+                        lowerKey.includes("password") ||
+                        lowerKey.includes("token") ||
+                        lowerKey.includes("secret") ||
+                        lowerKey.includes("session")
+                    ) {
+                        continue;
+                    }
+
+                    publicUser[key] = value;
+                }
+
+                return json({
+                    ok: true,
+                    user: publicUser
+                });
+
+            } catch (error) {
+
+                console.error("PUBLIC PROFILE ERROR:", error);
+
+                return json({
+                    ok: false,
+                    error: "Failed to load user"
+                }, 500);
+            }
+        }
+
         return json({
             ok: false,
             error: "Not found"
